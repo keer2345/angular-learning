@@ -1,0 +1,37 @@
+import { Component, OnInit, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-ticker',
+  templateUrl: './ticker.component.html',
+  styleUrls: ['./ticker.component.css']
+})
+export class TickerComponent implements OnInit {
+  @Input('stocks') _stocks: any = []
+  stocks: any = []
+  interval: any
+  page: number = 0
+
+  constructor() { }
+
+  ngOnInit(): void {
+    this.interval = setInterval(() => {
+      this.nextStock()
+    }, 3000)
+  }
+
+  ngOnChanges(): void {
+    if (this._stocks.length && this.stocks.length < 30) {
+      if (this.page * 100 > this._stocks.length) {
+        this.page = 0
+      }
+      let additions = this._stocks.slice(this.page * 100, (this.page + 1) * 100)
+      this.stocks.push(...additions)
+      this.page++
+    }
+  }
+
+  private nextStock(): void {
+    this.stocks.splice(0, 1)
+  }
+
+}
